@@ -8,7 +8,7 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server.js",
     "client": "npm run dev --prefix ../lnm-chat",
-    "build": "npm install --prefix lnm-chat && npm run export --prefix lnm-chat && npm install"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
