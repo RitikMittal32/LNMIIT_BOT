@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { UserCircleIcon, ArrowPathIcon, QrCodeIcon } from '@heroicons/react/24/outline';
 import { QRCode } from "qrcode.react";
 import { FAQ } from '@/components/FAQ/faq';
+import axios from '@/config/axiosConfig';
 import ChatMessage from '@/components/chatMessage/chatMessage';
 
 export default function ChatInterface() {
@@ -27,19 +28,17 @@ export default function ChatInterface() {
   
     setLoading(true);
   
+
     try {
-      const res = await fetch('http://localhost:5000/api/chat/dialogflow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, sessionId }),
-      });
-  
-      const data = await res.json();
-      
-      if (data.success) {
+      const res = await axios.post('/api/chat/dialogflow', 
+        { message: input, sessionId }, 
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    
+      if (res.data.success) {
         setMessages(prev => [
           ...prev,
-          { text: data.text, isBot: true, timestamp: new Date().toISOString() }
+          { text: res.data.text, isBot: true, timestamp: new Date().toISOString() }
         ]);
       } else {
         setMessages(prev => [
@@ -53,7 +52,7 @@ export default function ChatInterface() {
         { text: "Server error. Please try again.", isBot: true }
       ]);
     }
-  
+    
     setLoading(false);
     setInput('');
   };
