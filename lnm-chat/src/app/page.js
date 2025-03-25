@@ -9,6 +9,7 @@ export default function MainInterface() {
   const [showQR, setShowQR] = useState(false);
   const appDownloadLink = "https://example.com/download-app"; // Replace with your actual link
 
+  // Need responsiveness for tablet also
   return (
     <div className="h-screen bg-gradient-to-b from-white to-blue-50">
       <div className="sm:h-[12.5%] h-[18%]"><Header /></div>

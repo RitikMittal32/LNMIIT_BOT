@@ -1,12 +1,14 @@
 // app/chat/page.jsx
 'use client';
 import { useState, useEffect } from 'react';
-import { UserCircleIcon, ArrowPathIcon, QrCodeIcon , XMarkIcon  } from '@heroicons/react/24/outline';
-import { QRCode } from "qrcode.react";
+import { UserCircleIcon, ArrowPathIcon, XMarkIcon, Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { signOut , onAuthStateChanged} from 'firebase/auth';
+import { auth } from '@/components/signIn/google';
+import { useRouter } from 'next/navigation';
 import { FAQ } from '@/components/FAQ/faq';
 import axios from '@/config/axiosConfig';
-import ChatMessage from '@/components/chatMessage/chatMessage';
 import Image from 'next/image';
+
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState([]);
@@ -15,13 +17,42 @@ export default function ChatInterface() {
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showProfileOptions, setShowProfileOptions] = useState(false);
+  const router = useRouter();
 
+    // Get current user on component mount
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          setUser({
+            displayName: currentUser.displayName,
+            email: currentUser.email,
+            photoURL: currentUser.photoURL
+          });
+          // console.log(user.photoURL);
+        } else {
+          setUser(null);
+        }
+      });
+  
+      return () => unsubscribe();
+    }, [auth]);
+    const handleLogout = async () => {
+      try {
+        await signOut(auth);
+        router.push('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    };
+  
 
   const FAQ_QUESTIONS = [
     "Can I get info about {Professor_Name}",
     "Who works in {field_Name}",
     "Important Announcements",
-    "Can you find {Book_Name} in the Library?"
+    "Can you get the {Book_Name}"
   ];
 
   useEffect(() => {
@@ -96,12 +127,46 @@ export default function ChatInterface() {
         )}
 
         {/* Profile Section */}
-        <div className="flex items-center gap-3 mb-8">
-          <UserCircleIcon className="h-8 w-8 text-gray-400" />
+        <div 
+          className="flex items-center gap-3 mb-8 relative"
+          onClick={() => setShowProfileOptions(!showProfileOptions)}
+        >
+          {user?.photoURL ? (
+            <Image 
+              src={user.photoURL} 
+              alt="Profile" 
+              width={32} 
+              height={32} 
+              className="rounded-full"
+            />
+          ) : (
+            <UserCircleIcon className="h-8 w-8 text-gray-400" />
+          )}
+
           <div className={`${isSidebarOpen ? 'block' : 'hidden'}`}>
-            <h3 className="font-semibold">John Doe</h3>
-            <p className="text-sm text-gray-500">Student</p>
+            <h3 className="font-semibold">{user?.displayName || 'User'}</h3>
+            <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
+
+          {/* Profile Options Dropdown */}
+          {showProfileOptions && isSidebarOpen && (
+            <div className="absolute left-0 top-10 bg-white shadow-lg rounded-md border border-gray-200 z-10 w-full">
+              <button 
+                className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 text-left"
+                onClick={() => {/* Add settings navigation here */}}
+              >
+                <Cog6ToothIcon className="h-4 w-4" />
+                <span>Settings</span>
+              </button>
+              <button 
+                className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 text-left"
+                onClick={handleLogout}
+              >
+                <ArrowLeftOnRectangleIcon className="h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* QR Code Download - Only visible when expanded */}

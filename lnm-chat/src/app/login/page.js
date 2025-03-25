@@ -2,6 +2,7 @@
 'use client';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import GoogleSignIn from '@/components/signIn/google';
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   
@@ -31,6 +32,9 @@ export default function Login() {
         <button className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
           Login
         </button>
+        
+          <GoogleSignIn />
+        
       </div>
     </div>
   );
