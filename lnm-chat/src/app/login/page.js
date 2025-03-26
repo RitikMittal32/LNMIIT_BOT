@@ -3,9 +3,10 @@
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import GoogleSignIn from '@/components/signIn/google';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  
+  useAuthRedirect(false, '/chat');
   return (
     <div className="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-xl w-96">

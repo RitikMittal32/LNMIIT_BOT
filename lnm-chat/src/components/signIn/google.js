@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -34,9 +35,9 @@ const handleGoogleSignIn = async () => {
                     
                     // Domain restriction
                     if (!user.email?.endsWith('@lnmiit.ac.in')) {
-                    await auth.signOut();
-                    window.alert("Not authorised!");
-                    throw new Error('Only @lnmiit.ac.in emails are allowed');
+                      await auth.signOut();
+                      toast("Not authorised!");
+                      throw new Error('Only @lnmiit.ac.in emails are allowed');
                     }
                     
                     // Successful login - redirect or handle user

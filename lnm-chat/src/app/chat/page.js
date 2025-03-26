@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { FAQ } from '@/components/FAQ/faq';
 import axios from '@/config/axiosConfig';
 import Image from 'next/image';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 
 export default function ChatInterface() {
@@ -21,6 +22,7 @@ export default function ChatInterface() {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const router = useRouter();
 
+    useAuthRedirect(); 
     // Get current user on component mount
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -52,7 +54,7 @@ export default function ChatInterface() {
     "Can I get info about {Professor_Name}",
     "Who works in {field_Name}",
     "Important Announcements",
-    "Can you get the {Book_Name}"
+    "Can you get the {Book_Name}?"
   ];
 
   useEffect(() => {
