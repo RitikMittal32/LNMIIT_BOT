@@ -9,6 +9,7 @@ import { FAQ } from '@/components/FAQ/faq';
 import axios from '@/config/axiosConfig';
 import Image from 'next/image';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { toast } from 'react-toastify';
 
 
 export default function ChatInterface() {
@@ -43,6 +44,7 @@ export default function ChatInterface() {
     const handleLogout = async () => {
       try {
         await signOut(auth);
+        toast("LogOut Successfully!"); 
         router.push('/login');
       } catch (error) {
         console.error('Logout error:', error);
