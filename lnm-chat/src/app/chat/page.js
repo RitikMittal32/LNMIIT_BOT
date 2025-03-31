@@ -154,15 +154,21 @@ export default function ChatInterface() {
 
         </div>
 
-       
-          <button className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 4V20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-          {isSidebarOpen && "New Chat"}
+        {/* New Chat Button */}
+        
+          <button
+            onClick={startNewChat}
+            className={`mb-4   text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 ${isSidebarOpen ? 'bg-blue-600 mt-2  hover:bg-blue-700 p-2' : 'mt-20'}`}
+          >
+            <Image 
+            src='chat.png'
+            alt="Profile" 
+              width={28} 
+              height={28} 
+             />
+           {isSidebarOpen ? (<p>New Chat</p>) : ("") }
           </button>
-      
+        
 
          {/* Action Buttons - Always visible but change appearance based on sidebar state */}
          <div className="mt-auto mb-6 space-y-4 flex flex-col justify-center items-center">
@@ -170,7 +176,7 @@ export default function ChatInterface() {
           <button
             onClick={() => {/* Add settings navigation here */}}
             className={`flex items-center w-full  rounded-lg transition-colors
-              ${isSidebarOpen ? ' text-white font-bold justify-center bg-blue-500 p-1' : 'justify-center hover:bg-gray-100'}`}
+              ${isSidebarOpen ? ' text-white font-bold justify-center bg-blue-500 p-1  hover:bg-blue-700' : 'justify-center hover:bg-gray-100'}`}
           > 
             <Cog6ToothIcon className="h-8 w-8" />
             {isSidebarOpen && <span className="ml-2">SETTINGS</span>}
@@ -180,7 +186,7 @@ export default function ChatInterface() {
           <button
             onClick={handleLogout}
             className={`flex items-center w-full  rounded-lg transition-colors
-              ${isSidebarOpen ? 'text-white font-bold justify-center  bg-blue-500 p-1' : 'justify-center hover:bg-gray-100'}`}
+              ${isSidebarOpen ? 'text-white font-bold justify-center  bg-blue-500 p-1  hover:bg-blue-700' : 'justify-center hover:bg-gray-100'}`}
           >
               <ArrowLeftOnRectangleIcon className="h-8 w-8" />
             {isSidebarOpen && <span className="ml-2">LOGOUT</span>}
