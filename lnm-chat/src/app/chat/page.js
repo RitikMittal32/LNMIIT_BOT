@@ -154,15 +154,15 @@ export default function ChatInterface() {
 
         </div>
 
-        {/* New Chat Button */}
-        {isSidebarOpen && (
-          <button
-            onClick={startNewChat}
-            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            New Chat
+       
+          <button className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 4V20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          {isSidebarOpen && "New Chat"}
           </button>
-        )}
+      
 
          {/* Action Buttons - Always visible but change appearance based on sidebar state */}
          <div className="mt-auto mb-6 space-y-4 flex flex-col justify-center items-center">
