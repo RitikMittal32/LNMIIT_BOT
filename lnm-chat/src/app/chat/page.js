@@ -123,10 +123,10 @@ export default function ChatInterface() {
         {/* Close button for mobile */}
         {isMobile && (
           <button
-            className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full"
+            className="absolute top-4 right-2 p-1 hover:bg-gray-100 rounded-full z-10"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <XMarkIcon className="h-6 w-6 text-gray-500" />
+            <XMarkIcon className="h-8 w-8 text-gray-500" />
           </button>
         )}
 
@@ -215,7 +215,7 @@ export default function ChatInterface() {
             onClick={() => setIsSidebarOpen(true)}
             className="absolute top-2 left-2 z-10 p-2 hover:bg-gray-100 rounded-lg"
           >
-            <img src='/RightSideBar.svg' className="h-6 w-6 text-gray-500" />
+            <img src='/RightSideBar.svg' className="h-8 w-8 text-gray-500" />
           </button>
         )}
 

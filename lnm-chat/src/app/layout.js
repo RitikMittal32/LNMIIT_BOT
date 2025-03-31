@@ -6,7 +6,7 @@ import Head from 'next/head';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: 'swap', // Better font loading behavior
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -15,25 +15,25 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-// Viewport configuration (new in Next.js 13+)
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  // Add this to prevent mobile browsers from zooming on input focus
+  interactiveWidget: 'resizes-visual',
 };
-
 
 export const metadata = {
   title: "LNMIIT CHATBOT",
   description: "LNMIIT Information Retrieval ChatBot",
   icons: {
     icon: [
-      { url: 'https://lnmiit.ac.in/wp-content/uploads/2023/11/cropped-lnmiit-icon-32x32.png', type: 'image/png', sizes: '192x192'  },
-      { url: 'https://lnmiit.ac.in/wp-content/uploads/2023/11/cropped-lnmiit-icon-192x192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/lnmIcon32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/lnmIcon192x192.png', type: 'image/png', sizes: '192x192' },
     ],
     apple: [
-      { url: 'https://lnmiit.ac.in/wp-content/uploads/2023/11/cropped-lnmiit-icon-180x180.png', sizes: '180x180' },
+      { url: '/lnmIcon180x180.png', type: 'image/png', sizes: '180x180' },
     ],
   },
 };
@@ -42,31 +42,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
       <Head>
-        {/* Preconnect to improve font loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* iOS PWA meta tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      </Head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
-        suppressHydrationWarning={true} // For toast notifications
-      >
-        {/* Mobile viewport height fix */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
-              window.addEventListener('resize', function() {
-                document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
-              });
-            `,
-          }}
-        />
         
-        {children}
+        {/* Add these meta tags for better mobile handling */}
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="mobile-web-app-capable" content="yes" />
+      </Head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
+        {/* Improved mobile viewport handling */}
+        <div className="flex flex-col h-[calc(100dvh)] overflow-hidden">
+          {children}
+        </div>
         
         <ToastContainer
           position="bottom-center"
@@ -80,6 +69,7 @@ export default function RootLayout({ children }) {
           pauseOnHover
           theme="light"
           className="text-sm"
+          toastClassName="mb-[env(safe-area-inset-bottom)]" // Account for mobile bottom bar
         />
       </body>
     </html>
