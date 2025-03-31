@@ -1,26 +1,17 @@
 "use client"; 
 import React from 'react';
 import Link from 'next/link';
-
+import Image from 'next/image';
 const Header = () => {
   return (
     <header className="w-full bg-gradient-to-r h-full from-blue-600 to-purple-600 text-white shadow-lg">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="logoSide flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-            />
-          </svg>
+          <Image 
+          src = "https://lnmiit.ac.in/wp-content/uploads/2023/11/cropped-lnmiit-icon-180x180.png"
+          width={32}
+          height={32}
+          />
           <h1 className="text-xl font-bold">LNMIIT CHATBOT</h1>
         </div>
         <div className="OptionSide flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">

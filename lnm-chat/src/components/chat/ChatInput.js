@@ -3,7 +3,7 @@
 export const ChatInput = ({ input, setInput, handleSend, FAQ_QUESTIONS }) => {
   return (
     <div className="border-t border-gray-200 p-4 bg-white">
-      <div className="grid grid-cols-2 gap-2 mb-4 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-2 mb-4 md:grid-cols-2 overflow-x-auto">
         {FAQ_QUESTIONS.map((question, i) => (
           <div
             key={i}
@@ -21,11 +21,11 @@ export const ChatInput = ({ input, setInput, handleSend, FAQ_QUESTIONS }) => {
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Type your message..."
-          className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          className="flex-1 min-w-0 p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
         />
         <button
           onClick={handleSend}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
         >
           Send
         </button>
