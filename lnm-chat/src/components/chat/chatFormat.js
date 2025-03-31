@@ -1,6 +1,6 @@
 import React from "react";
 
-const ChatMessage = ({ message, isBot }) => {
+const ChatFormat = ({ message, isBot }) => {
   const formatMessage = (text) => {
     if (!text) return null;
 
@@ -85,4 +85,4 @@ const ChatMessage = ({ message, isBot }) => {
   );
 };
 
-export default ChatMessage;
+export default ChatFormat;

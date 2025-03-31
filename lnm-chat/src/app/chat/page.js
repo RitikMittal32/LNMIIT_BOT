@@ -1,21 +1,22 @@
-// app/chat/page.jsx
 'use client';
 import { useState, useEffect } from 'react';
 import { UserCircleIcon, ArrowPathIcon, XMarkIcon, Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
-import { signOut , onAuthStateChanged} from 'firebase/auth';
-import { auth } from '@/components/signIn/google';
+import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { FAQ } from '@/components/FAQ/faq';
 import axios from '@/config/axiosConfig';
 import Image from 'next/image';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { toast } from 'react-toastify';
-
+import { ChatMessages } from '@/components/chat/ChatMessages';
+import { ChatInput } from '@/components/chat/ChatInput';
+import { useChat } from '@/hooks/useChat';
+import { auth } from '@/config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState([]);
+  const { messages, sessionId, addMessage, startNewChat } = useChat();
   const [input, setInput] = useState('');
-  const [sessionId] = useState(() => Math.random().toString(36).substr(2, 9));
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -23,34 +24,33 @@ export default function ChatInterface() {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const router = useRouter();
 
-    useAuthRedirect(); 
-    // Get current user on component mount
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        if (currentUser) {
-          setUser({
-            displayName: currentUser.displayName,
-            email: currentUser.email,
-            photoURL: currentUser.photoURL
-          });
-          // console.log(user.photoURL);
-        } else {
-          setUser(null);
-        }
-      });
-  
-      return () => unsubscribe();
-    }, [auth]);
-    const handleLogout = async () => {
-      try {
-        await signOut(auth);
-        toast("LogOut Successfully!"); 
-        router.push('/login');
-      } catch (error) {
-        console.error('Logout error:', error);
+  useAuthRedirect();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser({
+          displayName: currentUser.displayName,
+          email: currentUser.email,
+          photoURL: currentUser.photoURL
+        });
+      } else {
+        setUser(null);
       }
-    };
-  
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast("LogOut Successfully!"); 
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const FAQ_QUESTIONS = [
     "Can I get info about {Professor_Name}",
@@ -68,12 +68,10 @@ export default function ChatInterface() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-  
-    // Add user message
-    setMessages(prev => [...prev, { text: input, isBot: false }]);
-  
+
+    // Add user message to Firebase
+    await addMessage({ text: input, isBot: false });
     setLoading(true);
-  
 
     try {
       const res = await axios.post('/api/chat/dialogflow', 
@@ -82,36 +80,38 @@ export default function ChatInterface() {
       );
     
       if (res.data.success) {
-        setMessages(prev => [
-          ...prev,
-          { text: res.data.text, isBot: true, timestamp: new Date().toISOString() }
-        ]);
+        // Add bot response to Firebase
+        await addMessage({ 
+          text: res.data.text, 
+          isBot: true, 
+          timestamp: new Date().toISOString() 
+        });
       } else {
-        setMessages(prev => [
-          ...prev,
-          { text: "Error processing your request.", isBot: true }
-        ]);
+        await addMessage({ 
+          text: "Error processing your request.", 
+          isBot: true 
+        });
       }
     } catch (error) {
-      setMessages(prev => [
-        ...prev,
-        { text: "Server error. Please try again.", isBot: true }
-      ]);
+      await addMessage({ 
+        text: "Server error. Please try again.", 
+        isBot: true 
+      });
     }
     
     setLoading(false);
     setInput('');
   };
-  
+
   return (
     <div className="flex h-screen bg-gray-50">
-    {/* Mobile Overlay */}
-    {isMobile && isSidebarOpen && (
-      <div 
-        className="fixed inset-0 bg-black/50 z-20"
-        onClick={() => setIsSidebarOpen(false)}
-      />
-    )}
+      {/* Mobile Overlay */}
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Collapsible Sidebar */}
       <div className={`
@@ -152,60 +152,45 @@ export default function ChatInterface() {
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
 
-          {/* Profile Options Dropdown */}
-          {showProfileOptions && isSidebarOpen && (
-            <div className="absolute left-0 top-10 bg-white shadow-lg rounded-md border border-gray-200 z-10 w-full">
-              <button 
-                className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 text-left"
-                onClick={() => {/* Add settings navigation here */}}
-              >
-                <Cog6ToothIcon className="h-4 w-4" />
-                <span>Settings</span>
-              </button>
-              <button 
-                className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 text-left"
-                onClick={handleLogout}
-              >
-                <ArrowLeftOnRectangleIcon className="h-4 w-4" />
-                <span>Logout</span>
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* QR Code Download - Only visible when expanded */}
+        {/* New Chat Button */}
         {isSidebarOpen && (
-          <div className="mb-8">
-            <div className="p-4 bg-gray-100 rounded-lg text-center">
-              {/* <QRCode 
-                value="https://play.google.com/store/apps/details?id=com.lnmiit.chatbot"
-                size={100}
-                className="mx-auto mb-2"
-              /> */}
-              <p className="text-xs text-gray-600">Scan to download mobile app</p>
-            </div>
-          </div>
+          <button
+            onClick={startNewChat}
+            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            New Chat
+          </button>
         )}
 
-        {/* Chat History - Only visible when expanded */}
-        {isSidebarOpen && (
-          <div className="flex-1 overflow-auto">
-            <h4 className="text-sm font-semibold text-gray-500 mb-2">History</h4>
-            <div className="space-y-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="text-sm p-2 hover:bg-gray-100 rounded cursor-pointer">
-                  Conversation {i + 1}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+         {/* Action Buttons - Always visible but change appearance based on sidebar state */}
+         <div className="mt-auto mb-6 space-y-4 flex flex-col justify-center items-center">
+          {/* Settings Button */}
+          <button
+            onClick={() => {/* Add settings navigation here */}}
+            className={`flex items-center w-full  rounded-lg transition-colors
+              ${isSidebarOpen ? ' text-white font-bold justify-center bg-blue-500 p-1' : 'justify-center hover:bg-gray-100'}`}
+          > 
+            <Cog6ToothIcon className="h-8 w-8" />
+            {isSidebarOpen && <span className="ml-2">SETTINGS</span>}
+          </button>
 
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className={`flex items-center w-full  rounded-lg transition-colors
+              ${isSidebarOpen ? 'text-white font-bold justify-center  bg-blue-500 p-1' : 'justify-center hover:bg-gray-100'}`}
+          >
+              <ArrowLeftOnRectangleIcon className="h-8 w-8" />
+            {isSidebarOpen && <span className="ml-2">LOGOUT</span>}
+          </button>
+        </div>
         {/* Collapse Button (desktop) */}
         {!isMobile && (
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`${isSidebarOpen? 'absolute top-5 right-4 p-1 hover:bg-gray-100 rounded-lg self-start' : 'p-1 hover:bg-gray-100 rounded-lg self-start'}`}
+            className={`${isSidebarOpen? 'absolute top-5 right-4 p-1 hover:bg-gray-100 rounded-lg self-start' : 'absolute top-20 p-1 hover:bg-gray-100 rounded-lg self-start'}`}
           >
             {isSidebarOpen ? (
               <img src='/LeftSideBar.svg' className="h-6 w-6 text-gray-500" />
@@ -228,70 +213,13 @@ export default function ChatInterface() {
           </button>
         )}
 
-        {/* Messages Container */}
-        <div className="flex-1 overflow-auto p-4 space-y-4 pt-12 md:pt-4">
-          {messages.map((message, i) => (
-            <div key={i} className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}>
-              <div className={`max-w-[70%] rounded-lg p-3 ${
-                message.isBot 
-                  ? 'bg-white border border-gray-200'
-                  : 'bg-blue-600 text-white'
-              }`}>
-                <p className="text-sm">{message.text}</p>
-                {message.timestamp && (
-                  <p className="text-xs mt-1 opacity-70">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-          {/* {messages.map((message, i) => (
-            <ChatMessage key={i} message={message} isBot={message.isBot} />
-          ))} */}
-          
-          {loading && (
-            <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-lg p-3">
-                <ArrowPathIcon className="h-4 w-4 animate-spin" />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* FAQ & Input Section */}
-        <div className="border-t border-gray-200 p-4 bg-white">
-          {/* FAQ Suggestions */}
-          <div className="grid grid-cols-2 gap-2 mb-4 md:grid-cols-2">
-            {FAQ_QUESTIONS.map((question, i) => (
-              <div
-                key={i}
-                onClick={() => setInput(question)}
-                className="text-sm p-2 bg-gray-100 rounded cursor-pointer hover:bg-gray-200 truncate"
-              >
-                {question}
-              </div>
-            ))}
-    
-          </div>
-
-          {/* Input Area */}
-          <div className="flex gap-2">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Type your message..."
-              className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
-            <button
-              onClick={handleSend}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Send
-            </button>
-          </div>
-        </div>
+        <ChatMessages messages={messages} loading={loading} />
+        <ChatInput 
+          input={input} 
+          setInput={setInput} 
+          handleSend={handleSend} 
+          FAQ_QUESTIONS={FAQ_QUESTIONS} 
+        />
       </div>
     </div>
   );
