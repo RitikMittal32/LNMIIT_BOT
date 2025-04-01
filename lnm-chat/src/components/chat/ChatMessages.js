@@ -14,7 +14,7 @@ export const ChatMessages = ({ messages, loading }) => {
     <div className="flex-1 overflow-auto p-4 space-y-4 pt-12 md:pt-4">
       {messages.map((message, i) => (
         <div key={i} className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}>
-          <div className={`max-w-[70%] rounded-lg p-3 ${
+          <div className={`max-w-[90%] rounded-lg p-3 ${
             message.isBot 
               ? 'bg-white border border-gray-200'
               : 'bg-blue-600 text-white'
