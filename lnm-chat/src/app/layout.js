@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
         </div>
         
         <ToastContainer
-          position="bottom-center"
+          position="top-right"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -69,7 +69,6 @@ export default function RootLayout({ children }) {
           pauseOnHover
           theme="light"
           className="text-sm"
-          toastClassName="mb-[env(safe-area-inset-bottom)]" // Account for mobile bottom bar
         />
       </body>
     </html>
