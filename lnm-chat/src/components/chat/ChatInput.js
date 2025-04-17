@@ -3,7 +3,7 @@
 export const ChatInput = ({ input, setInput, handleSend, FAQ_QUESTIONS }) => {
   return (
     <div className="border-t border-gray-200 p-4 bg-white">
-      <div className="grid grid-cols-2 gap-2 mb-4 md:grid-cols-2 overflow-x-auto">
+      <div className="md:grid gap-2 mb-4 md:grid-cols-2 overflow-x-auto hidden">
         {FAQ_QUESTIONS.map((question, i) => (
           <div
             key={i}

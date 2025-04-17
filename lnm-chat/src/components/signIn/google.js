@@ -36,28 +36,30 @@ const handleGoogleSignIn = async () => {
 };
 
   return (
-    <div className='flex justify-center w-full mt-1  bg-blue-600 p-3 text-white rounded-lg hover:bg-blue-700 transition'>
-      <button 
-        onClick={handleGoogleSignIn}
-        style={{
-          width: "100%",
-          color: 'white',
-          fontSize: '16px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px'
-        }}
-      >
-        <img 
-          src="/GoogleLogo.svg" 
-          alt="Google logo" 
-          style={{ width: '20px', height: '20px' }}
-        />
-        Sign in with Google 
-      </button>
-    </div>
+<div className='flex justify-center w-full mt-1 p-3 rounded-2xl  transition border-2 border-white'>
+  <button 
+    onClick={handleGoogleSignIn}
+    className="w-full"
+    style={{
+      color: '#3c4043',
+      fontSize: '16px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+      backgroundColor: 'transparent',
+      border: 'none'
+    }}
+  >
+    <img 
+      src="/GoogleLogo.svg" 
+      alt="Google logo" 
+      style={{ width: '25px', height: '25px' }}
+    />
+    <span className="hidden sm:inline text-white font-semibold">Sign in with Google</span>
+  </button>
+</div>
   );
 };
 

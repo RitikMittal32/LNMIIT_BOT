@@ -34,7 +34,7 @@ export default function Login() {
           Login
         </button>
         
-          <GoogleSignIn />
+          
         
       </div>
     </div>

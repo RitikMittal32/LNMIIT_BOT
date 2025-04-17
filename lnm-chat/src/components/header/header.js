@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import GoogleSignIn from '../signIn/google';
 const Header = () => {
   return (
     <header className="w-full bg-gradient-to-r h-full from-blue-600 to-purple-600 text-white shadow-lg">
@@ -15,16 +16,7 @@ const Header = () => {
           <h1 className="text-xl font-bold">LNMIIT CHATBOT</h1>
         </div>
         <div className="OptionSide flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
-          <Link href='/login/' target='_blank'>
-          <button className="w-full sm:w-auto px-4 py-2 rounded-md font-medium bg-white text-blue-600 hover:bg-gray-100 transition duration-200">
-          LOGIN
-          </button>
-          </Link>
-          <Link href='/register/' target='_blank'>
-          <button className="w-full sm:w-auto px-4 py-2 rounded-md font-medium bg-transparent border-2 border-white hover:bg-white hover:text-blue-600 transition duration-200">
-          SIGN UP
-          </button>
-          </Link>
+          <GoogleSignIn />
           </div>
       </div>
     </header>

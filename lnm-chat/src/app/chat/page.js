@@ -46,7 +46,7 @@ export default function ChatInterface() {
     try {
       await signOut(auth);
       toast("LogOut Successfully!"); 
-      router.push('/login');
+      router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -66,6 +66,11 @@ export default function ChatInterface() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const generateSessionId = () => {
+    return 'session_' + Math.random().toString(36).substring(2, 9);
+  };
+  
+
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -74,28 +79,41 @@ export default function ChatInterface() {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/chat/dialogflow', 
-        { message: input, sessionId }, 
-        { headers: { 'Content-Type': 'application/json' } }
+      const res = await axios.post('/query', 
+        {  // Request body (2nd argument)
+          query: input,
+          session_id: generateSessionId(),
+        },
+        {  // Config (3rd argument)
+          headers: {
+            'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true" 
+            // Add other headers if needed (e.g., Authorization)
+          },
+        }
       );
     
-      if (res.data.success) {
-        // Add bot response to Firebase
+    // Handle response based on the API structure
+      if (res.data?.reply) {
+        // Successful response with reply
         await addMessage({ 
-          text: res.data.text, 
-          isBot: true, 
-          timestamp: new Date().toISOString() 
+          text: res.data.reply,  // Using 'reply' instead of 'text'
+          isBot: true,
+          timestamp: new Date().toISOString()
         });
       } else {
-        await addMessage({ 
-          text: "Error processing your request.", 
-          isBot: true 
+        // No reply in response
+        await addMessage({
+          text: "Sorry, I couldn't process your request.",
+          isBot: true,
+          timestamp: new Date().toISOString()
         });
       }
     } catch (error) {
       await addMessage({ 
-        text: "Server error. Please try again.", 
-        isBot: true 
+        text: `Server error. Please try again. ${error.message}`, 
+        isBot: true,
+        timestamp: new Date().toISOString()
       });
     }
     
@@ -172,21 +190,21 @@ export default function ChatInterface() {
 
          {/* Action Buttons - Always visible but change appearance based on sidebar state */}
          <div className="mt-auto mb-6 space-y-4 flex flex-col justify-center items-center">
-          {/* Settings Button */}
+          {/* Settings Button
           <button
-            onClick={() => {/* Add settings navigation here */}}
+            onClick={() => {/* Add settings navigation here }}
             className={`flex items-center w-full  rounded-lg transition-colors
               ${isSidebarOpen ? ' text-white font-bold justify-center bg-blue-500 p-1  hover:bg-blue-700' : 'justify-center hover:bg-gray-100'}`}
           > 
             <Cog6ToothIcon className="h-8 w-8" />
             {isSidebarOpen && <span className="ml-2">SETTINGS</span>}
-          </button>
+          </button> */}
 
           {/* Logout Button */}
           <button
             onClick={handleLogout}
             className={`flex items-center w-full  rounded-lg transition-colors
-              ${isSidebarOpen ? 'text-white font-bold justify-center  bg-blue-500 p-1  hover:bg-blue-700' : 'justify-center hover:bg-gray-100'}`}
+              ${isSidebarOpen ? 'text-white font-bold justify-center  bg-blue-600 p-1  hover:bg-blue-700' : 'justify-center hover:bg-gray-100'}`}
           >
               <ArrowLeftOnRectangleIcon className="h-8 w-8" />
             {isSidebarOpen && <span className="ml-2">LOGOUT</span>}
@@ -196,7 +214,7 @@ export default function ChatInterface() {
         {!isMobile && (
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`${isSidebarOpen? 'absolute top-5 right-4 p-1 hover:bg-gray-100 rounded-lg self-start' : 'absolute top-20 p-1 hover:bg-gray-100 rounded-lg self-start'}`}
+            className={`${isSidebarOpen? 'absolute top-5 right-1 p-1 hover:bg-gray-100 rounded-lg self-start' : 'absolute top-20 p-1 hover:bg-gray-100 rounded-lg self-start'}`}
           >
             {isSidebarOpen ? (
               <img src='/LeftSideBar.svg' className="h-6 w-6 text-gray-500" />

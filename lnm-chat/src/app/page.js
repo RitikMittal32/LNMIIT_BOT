@@ -12,19 +12,20 @@ export default function MainInterface() {
   // Need responsiveness for tablet also
   return (
     <div className="h-screen bg-gradient-to-b from-white to-blue-50">
-      <div className="sm:h-[12.5%] h-[18%]"><Header /></div>
-      <div className="sm:h-[87.5%] h-[82%] flex flex-col">
-        <div className="chatInfo h-[30%] flex justify-center items-center">
-          <p className="text-2xl font-medium text-gray-700">Welcome to LNMIIT CHATBOT</p>
+      <div className="h-[12.5%]"><Header /></div>
+      <div className="h-[87.5%] flex flex-col">
+        <div className="chatInfo h-[40%] flex flex-col justify-center items-center">
+        <p className="text-2xl font-medium text-gray-700">Welcome to,</p>
+        <p className="text-3xl md:text-4xl font-bold text-gray-800">LNMIIT CHATBOT</p>
         </div>
-        <div className="connectInfo h-[70%] flex flex-col justify-center items-center gap-8 w-[80%] mx-auto">
+        <div className="connectInfo h-[60%] flex flex-col justify-center items-center gap-8 w-[80%] mx-auto">
           <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
             {/* Get Started Button */}
             <Link 
               href="/chat/" 
               className="relative w-full max-w-xs" target="_blank"
             >
-              <button className="w-full p-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <button className="w-full p-5 md:p-10 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 Get Started
                 <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
               </button>
@@ -34,7 +35,7 @@ export default function MainInterface() {
             <div className="relative w-full max-w-xs">
               <button 
                 onClick={() => setShowQR(!showQR)}
-                className="w-full p-12 text-white bg-purple-600 rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="w-full p-5 md:p-10 text-white bg-purple-600 rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 Get LNMIIT Chatbot App
               </button>

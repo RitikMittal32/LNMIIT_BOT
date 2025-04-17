@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 let globalToastShown = false; // Global flag outside component
 
-export function useAuthRedirect(requiredAuth = true, redirectPath = '/login') {
+export function useAuthRedirect(requiredAuth = true, redirectPath = '/') {
   const router = useRouter();
   const localToastShown = useRef(false);
 
