@@ -29,6 +29,15 @@ export default function ChatInterface() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
+        const username = currentUser.email.split('@')[0];
+  
+        // Generate session_id only if not already set for this session
+        let sessionId = sessionStorage.getItem('session_id');
+        if (!sessionId) {
+          sessionId = `session_${username}_${Date.now()}`;
+          sessionStorage.setItem('session_id', sessionId);
+        }
+  
         setUser({
           displayName: currentUser.displayName,
           email: currentUser.email,
@@ -36,16 +45,19 @@ export default function ChatInterface() {
         });
       } else {
         setUser(null);
+        sessionStorage.removeItem('session_id'); // Clear session on logout
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
+  
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      toast("LogOut Successfully!"); 
+      sessionStorage.removeItem('session_id'); // Clear session_id
+      toast("LogOut Successfully!");
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
@@ -67,7 +79,7 @@ export default function ChatInterface() {
   }, []);
 
   const generateSessionId = () => {
-    return 'session_' + Math.random().toString(36).substring(2, 9);
+    return 'session_' + user.displayName  + '_' + Math.random().toString(36).substring(2, 9);
   };
   
 
@@ -82,7 +94,7 @@ export default function ChatInterface() {
       const res = await axios.post('/query', 
         {  // Request body (2nd argument)
           query: input,
-          session_id: generateSessionId(),
+          session_id: sessionStorage.getItem('session_id'),
         },
         {  // Config (3rd argument)
           headers: {
