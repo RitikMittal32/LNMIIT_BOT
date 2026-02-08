@@ -32,15 +32,15 @@ export default function MainInterface() {
             </Link>
 
             {/* Get App Button with QR Code */}
-            // <div className="relative w-full max-w-xs">
-            //   <button 
-            //     onClick={() => setShowQR(!showQR)}
-            //     className="w-full p-5 md:p-10 text-white bg-purple-600 rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            //   >
-            //     Get LNMIIT Chatbot App
-            //   </button>
+             {/* <div className="relative w-full max-w-xs">
+              <button 
+                onClick={() => setShowQR(!showQR)}
+                className="w-full p-5 md:p-10 text-white bg-purple-600 rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Get LNMIIT Chatbot App
+              </button>
               
-              {/* {showQR && (
+              {showQR && (
                 <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-2xl border border-gray-200 z-10">
                   <QRCode 
                     value={appDownloadLink} 
@@ -58,8 +58,8 @@ export default function MainInterface() {
                   </a>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-r border-b border-gray-200"></div>
                 </div>
-              )} */}
-            // </div>
+              )} 
+             </div> */}
           </div>
         </div>
       </div>
